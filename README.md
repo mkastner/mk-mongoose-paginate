@@ -1,14 +1,24 @@
-
-# mongoose-paginate
+# mongoose-paginate with collation option
 
 > Pagination plugin for [Mongoose](http://mongoosejs.com)
 
-[![NPM version](https://img.shields.io/npm/v/mongoose-paginate.svg)](https://npmjs.org/package/mongoose-paginate)
-[![Build status](https://img.shields.io/travis/edwardhotchkiss/mongoose-paginate.svg)](https://travis-ci.org/edwardhotchkiss/mongoose-paginate)
+I needed to fork this for several reasons.
 
-**Note:** This plugin will only work with Node.js >= 4.2 and Mongoose >= 4.2
+1. I needed a version with collation. You have to have mongodb >= 3.4 in order to use collations.
+2. The latest version didn't work, so I modified some stuff
+3. The original mongoose-pagination seems to have fallen asleep to say the least
+
+In order to use this plugin you need the following prereqs:
+
+1. node.js >= 7.0 with harmony flag for async/await or even better >= 8.0
+2. mongodb >= 3.4 in order to be able to use collations
+3. mongoose >= 4.2
+
+This fork of mongoose-paginate supports the additional findOptions-Option. In
+particular the collation option.
+
 =======
-[![NPM](https://nodei.co/npm/mongoose-paginate.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/mongoose-paginate/)
+
 
 ## Installation
 
@@ -22,7 +32,7 @@ Add plugin to a schema and then use model `paginate` method:
 
 ```js
 var mongoose = require('mongoose');
-var mongoosePaginate = require('mongoose-paginate');
+var mongoosePaginate = require('mk-mongoose-paginate');
 
 var schema = new mongoose.Schema({ /* schema definition */ });
 schema.plugin(mongoosePaginate);
@@ -36,8 +46,9 @@ var Model = mongoose.model('Model',  schema); // Model.paginate()
 
 * `[query]` {Object} - Query criteria. [Documentation](https://docs.mongodb.org/manual/tutorial/query-documents)
 * `[options]` {Object}
-  - `[select]` {Object | String} - Fields to return (by default returns all fields). [Documentation](http://mongoosejs.com/docs/api.html#query_Query-select) 
-  - `[sort]` {Object | String} - Sort order. [Documentation](http://mongoosejs.com/docs/api.html#query_Query-sort) 
+  - `[findOptions]` {Object} - extra options for find e.g. collation.
+  - `[select]` {Object | String} - Fields to return (by default returns all fields). [Documentation](http://mongoosejs.com/docs/api.html#query_Query-select)
+  - `[sort]` {Object | String} - Sort order. [Documentation](http://mongoosejs.com/docs/api.html#query_Query-sort)
   - `[populate]` {Array | Object | String} - Paths which should be populated with other documents. [Documentation](http://mongoosejs.com/docs/api.html#query_Query-populate)
   - `[lean=false]` {Boolean} - Should return plain javascript objects instead of Mongoose documents?  [Documentation](http://mongoosejs.com/docs/api.html#query_Query-lean)
   - `[leanWithId=true]` {Boolean} - If `lean` and `leanWithId` are `true`, adds `id` field with string representation of `_id` to every document
@@ -52,8 +63,8 @@ Promise fulfilled with object having properties:
 * `docs` {Array} - Array of documents
 * `total` {Number} - Total number of documents in collection that match a query
 * `limit` {Number} - Limit that was used
-* `[page]` {Number} - Only if specified or default `page`/`offset` values were used 
-* `[pages]` {Number} - Only if `page` specified or default `page`/`offset` values were used 
+* `[page]` {Number} - Only if specified or default `page`/`offset` values were used
+* `[pages]` {Number} - Only if `page` specified or default `page`/`offset` values were used
 * `[offset]` {Number} - Only if specified or default `page`/`offset` values were used
 
 ### Examples
@@ -89,6 +100,14 @@ Model.paginate({}, { offset: 20, limit: 10 }).then(function(result) {
 });
 ```
 
+With collation (e.g. German):
+
+```js
+Model.paginate({}, { offset: 20, limit: 10, collation: { locale: 'de' } }).then(function(result) {
+  // ...
+});
+```
+
 #### More advanced example
 
 ```js
@@ -98,7 +117,7 @@ var options = {
   sort: { date: -1 },
   populate: 'author',
   lean: true,
-  offset: 20, 
+  offset: 20,
   limit: 10
 };
 
@@ -125,9 +144,9 @@ Model.paginate({}, { offset: 100, limit: 0 }).then(function(result) {
 config.js:
 
 ```js
-var mongoosePaginate = require('mongoose-paginate');
+var mongoosePaginate = require('mk-mongoose-paginate');
 
-mongoosePaginate.paginate.options = { 
+mongoosePaginate.paginate.options = {
   lean:  true,
   limit: 20
 };

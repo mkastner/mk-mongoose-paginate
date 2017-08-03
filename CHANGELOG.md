@@ -1,3 +1,6 @@
+v5.1.0 / 2015-12-07
+==================
+  * Added findOptions in order to be able to use mongodb collation
 
 v5.0.0 / 2015-12-07
 ==================
@@ -13,7 +16,7 @@ v5.0.0 / 2015-12-07
   * Custom default options
   * Mocha tests
   * Travis CI
-  
+
 v4.2.0 / 2015-09-12
 ==================
 
@@ -176,4 +179,3 @@ v4.0.1 / 2015-08-5
   * [node] bump engine req to 0.6.11
   * [deps] bump mongoose to 2.5.13
   * [deps] bump vows to 0.6.2
- 
